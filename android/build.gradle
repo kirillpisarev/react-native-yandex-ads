@@ -33,9 +33,9 @@ android {
     targetSdkVersion getExtOrIntegerDefault('targetSdkVersion')
     versionCode 1
     versionName "1.0"
-    
+
   }
-  
+
   buildTypes {
     release {
       minifyEnabled false
@@ -114,7 +114,7 @@ repositories {
   }
 
   if (!found) {
-    throw new GradleException(
+    throw new FileNotFoundException(
             "${project.name}: unable to locate React Native android sources. " +
                     "Ensure you have you installed React Native as a dependency in your project and try again."
     )
@@ -127,4 +127,7 @@ dependencies {
   // noinspection GradleDynamicVersion
   api 'com.facebook.react:react-native:+'
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+  implementation 'com.yandex.android:mobileads:2.160'
+  implementation 'com.yandex.android:mobmetricalib:3.13.1'
 }

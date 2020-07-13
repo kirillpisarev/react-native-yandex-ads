@@ -1,25 +1,49 @@
-import * as React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import YandexAds from 'react-native-yandex-ads';
+import * as React from "react"
+import { StyleSheet, View, Text, TouchableHighlight } from "react-native"
+import YandexAds from "react-native-yandex-ads"
 
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
+	const showInterstitial = React.useCallback(() => {
+		YandexAds.showInterstitialAd(
+			"R-M-DEMO-400x240-context",
+			Math.random() + ""
+		)
+	}, [])
 
-  React.useEffect(() => {
-    YandexAds.multiply(3, 7).then(setResult);
-  }, []);
+	const onInterstitialEvent = React.useCallback((event) => {
+		console.log("event", event)
+	}, [])
 
-  return (
-    <View style={styles.container}>
-      <Text>Result: {result}</Text>
-    </View>
-  );
+	React.useEffect(() => {
+		const interstitialListener = YandexAds.addInterstitialEventListener(
+			onInterstitialEvent
+		)
+		return interstitialListener.remove
+	}, [onInterstitialEvent])
+
+	return (
+		<View style={styles.container}>
+			<TouchableHighlight
+				onPress={showInterstitial}
+				style={styles.button}
+			>
+				<Text>Show interstitial</Text>
+			</TouchableHighlight>
+		</View>
+	)
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+	container: {
+		flex: 1,
+		alignItems: "stretch",
+		justifyContent: "center",
+		marginHorizontal: "5%",
+	},
+	button: {
+		backgroundColor: "cyan",
+		justifyContent: "center",
+		alignItems: "center",
+		paddingVertical: 10,
+	},
+})
