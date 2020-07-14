@@ -10,7 +10,18 @@ export default function App() {
 		)
 	}, [])
 
+	const showRewarded = React.useCallback(() => {
+		YandexAds.showRewardedAd(
+			"R-M-DEMO-rewarded-client-side-rtb",
+			Math.random() + ""
+		)
+	}, [])
+
 	const onInterstitialEvent = React.useCallback((event) => {
+		console.log("event", event)
+	}, [])
+
+	const onRewardedEvent = React.useCallback((event) => {
 		console.log("event", event)
 	}, [])
 
@@ -18,8 +29,14 @@ export default function App() {
 		const interstitialListener = YandexAds.addInterstitialEventListener(
 			onInterstitialEvent
 		)
-		return interstitialListener.remove.bind(interstitialListener)
-	}, [onInterstitialEvent])
+		const rewardedListener = YandexAds.addRewardedEventListener(
+			onRewardedEvent
+		)
+		return () => {
+			interstitialListener.remove()
+			rewardedListener.remove()
+		}
+	}, [onInterstitialEvent, onRewardedEvent])
 
 	return (
 		<View style={styles.container}>
@@ -28,6 +45,10 @@ export default function App() {
 				style={styles.button}
 			>
 				<Text>Show interstitial</Text>
+			</TouchableHighlight>
+
+			<TouchableHighlight onPress={showRewarded} style={styles.button}>
+				<Text>Show rewarded</Text>
 			</TouchableHighlight>
 		</View>
 	)
@@ -45,5 +66,6 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		paddingVertical: 10,
+		marginVertical: 10,
 	},
 })
