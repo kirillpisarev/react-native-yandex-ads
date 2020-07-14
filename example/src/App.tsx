@@ -18,7 +18,7 @@ export default function App() {
 		const interstitialListener = YandexAds.addInterstitialEventListener(
 			onInterstitialEvent
 		)
-		return interstitialListener.remove
+		return interstitialListener.remove.bind(interstitialListener)
 	}, [onInterstitialEvent])
 
 	return (
