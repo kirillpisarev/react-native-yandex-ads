@@ -13,30 +13,31 @@ export default function App() {
 	const showRewarded = React.useCallback(() => {
 		YandexAds.showRewardedAd(
 			"R-M-DEMO-rewarded-client-side-rtb",
+			"some-user-id",
 			Math.random() + ""
 		)
 	}, [])
 
-	const onInterstitialEvent = React.useCallback((event) => {
-		console.log("event", event)
-	}, [])
+	// const onInterstitialEvent = React.useCallback((event) => {
+	// 	console.log("event", event)
+	// }, [])
 
-	const onRewardedEvent = React.useCallback((event) => {
-		console.log("event", event)
-	}, [])
+	// const onRewardedEvent = React.useCallback((event) => {
+	// 	console.log("event", event)
+	// }, [])
 
-	React.useEffect(() => {
-		const interstitialListener = YandexAds.addInterstitialEventListener(
-			onInterstitialEvent
-		)
-		const rewardedListener = YandexAds.addRewardedEventListener(
-			onRewardedEvent
-		)
-		return () => {
-			interstitialListener.remove()
-			rewardedListener.remove()
-		}
-	}, [onInterstitialEvent, onRewardedEvent])
+	// React.useEffect(() => {
+	// 	const interstitialListener = YandexAds.addInterstitialEventListener(
+	// 		onInterstitialEvent
+	// 	)
+	// 	const rewardedListener = YandexAds.addRewardedEventListener(
+	// 		onRewardedEvent
+	// 	)
+	// 	return () => {
+	// 		interstitialListener.remove()
+	// 		rewardedListener.remove()
+	// 	}
+	// }, [onInterstitialEvent, onRewardedEvent])
 
 	return (
 		<View style={styles.container}>

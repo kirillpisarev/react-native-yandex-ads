@@ -18,4 +18,6 @@ Pod::Spec.new do |s|
   
 
   s.dependency "React"
+  s.dependency "YandexMobileAds", "2.15.4"
+  
 end
