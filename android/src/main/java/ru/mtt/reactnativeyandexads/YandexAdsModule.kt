@@ -5,7 +5,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEm
 import com.yandex.mobile.ads.AdRequest
 import com.yandex.mobile.ads.AdRequestError
 import com.yandex.mobile.ads.InterstitialAd
-import com.yandex.mobile.ads.InterstitialEventListener.SimpleInterstitialEventListener
+import com.yandex.mobile.ads.InterstitialEventListener
 import com.yandex.mobile.ads.rewarded.Reward
 import com.yandex.mobile.ads.rewarded.RewardedAd
 import com.yandex.mobile.ads.rewarded.RewardedAdEventListener
@@ -37,26 +37,42 @@ class YandexAdsModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
 		val interstitialAd = InterstitialAd(reactContext)
 		val adRequest = AdRequest.Builder().build()
 		interstitialAd.blockId = blockId
-		interstitialAd.interstitialEventListener = object : SimpleInterstitialEventListener() {
+		interstitialAd.interstitialEventListener = object : InterstitialEventListener {
+
 			override fun onInterstitialLoaded() {
 				interstitialAd.show()
-				sendEvent("interstitial", buildEventParams("onLoad", adId))
+				sendEvent("interstitial", buildEventParams("onInterstitialLoaded", adId))
 			}
 
 			override fun onInterstitialFailedToLoad(error: AdRequestError?) {
-				val params = buildEventParams("failToLoad", adId)
-				val payload = Arguments.createMap()
-				payload.putString("error", error.toString())
-				params.putMap("payload", payload)
+				val params = buildEventParams("onInterstitialFailedToLoad", adId)
+				if (error != null) {
+					val payload = Arguments.createMap()
+					payload.putString("errorMessage", error.toString())
+					payload.putInt("errorCode", error.code)
+					params.putMap("payload", payload)
+				}
 				sendEvent("interstitial", params)
 			}
 
 			override fun onInterstitialShown() {
-				sendEvent("interstitial", buildEventParams("onShown", adId))
+				sendEvent("interstitial", buildEventParams("onInterstitialShown", adId))
 			}
 
 			override fun onInterstitialDismissed() {
-				sendEvent("interstitial", buildEventParams("onDismiss", adId))
+				sendEvent("interstitial", buildEventParams("onInterstitialDismissed", adId))
+			}
+
+			override fun onAdClosed() {
+				sendEvent("interstitial", buildEventParams("onAdClosed", adId))
+			}
+
+			override fun onAdLeftApplication() {
+				sendEvent("interstitial", buildEventParams("onAdLeftApplication", adId))
+			}
+
+			override fun onAdOpened() {
+				sendEvent("interstitial", buildEventParams("onAdOpened", adId))
 			}
 
 		}
@@ -71,30 +87,51 @@ class YandexAdsModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
 		if (userId != null) {
 			rewardedAd.setUserId(userId)
 		}
-		rewardedAd.setRewardedAdEventListener(object : RewardedAdEventListener.SimpleRewardedAdEventListener() {
-			override fun onAdFailedToLoad(p0: AdRequestError?) {
-				val params = buildEventParams("failToLoad", adId)
-				val payload = Arguments.createMap()
-				payload.putString("error", p0.toString())
-				params.putMap("payload", payload)
+		rewardedAd.setRewardedAdEventListener(object : RewardedAdEventListener() {
+
+			override fun onAdFailedToLoad(error: AdRequestError?) {
+				val params = buildEventParams("onAdFailedToLoad", adId)
+				if (error != null) {
+					val payload = Arguments.createMap()
+					payload.putString("errorMessage", error.toString())
+					payload.putInt("errorCode", error.code)
+					params.putMap("payload", payload)
+				}
 				sendEvent("rewarded", params)
 			}
 
 			override fun onAdDismissed() {
-				sendEvent("rewarded", buildEventParams("onDismiss", adId))
+				sendEvent("rewarded", buildEventParams("onAdDismissed", adId))
 			}
 
-			override fun onRewarded(p0: Reward) {
-				sendEvent("rewarded", buildEventParams("onRewarded", adId))
+			override fun onRewarded(reward: Reward) {
+				val params = buildEventParams("onRewarded", adId)
+				val payload = Arguments.createMap()
+				payload.putString("rewardType", reward.type)
+				payload.putInt("rewardAmount", reward.amount)
+				params.putMap("payload", payload)
+				sendEvent("rewarded", params)
 			}
 
 			override fun onAdShown() {
-				sendEvent("rewarded", buildEventParams("onShown", adId))
+				sendEvent("rewarded", buildEventParams("onAdShown", adId))
 			}
 
 			override fun onAdLoaded() {
-				sendEvent("rewarded", buildEventParams("onDismiss", adId))
+				sendEvent("rewarded", buildEventParams("onAdLoaded", adId))
 				rewardedAd.show()
+			}
+
+			override fun onAdClosed() {
+				sendEvent("rewarded", buildEventParams("onAdClosed", adId))
+			}
+
+			override fun onAdLeftApplication() {
+				sendEvent("rewarded", buildEventParams("onAdLeftApplication", adId))
+			}
+
+			override fun onAdOpened() {
+				sendEvent("rewarded", buildEventParams("onAdOpened", adId))
 			}
 
 		})
