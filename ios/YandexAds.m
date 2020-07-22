@@ -10,6 +10,9 @@
 @end
 
 @implementation YandexAds
+{
+  bool hasListeners;
+}
 
 RCT_EXPORT_MODULE()
 
@@ -43,7 +46,7 @@ RCT_REMAP_METHOD(showRewardedAd,
     UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
     [interstitial presentInterstitialFromViewController:rootViewController];
     NSDictionary* params = [self buildEventParamsForType:@"interstitialDidLoadAd" andAdId:nil];
-    [self sendEventWithName:@"interstitial" body:params];
+    [self lazySendEventWithName:@"interstitial" body:params];
 }
 
 - (void)interstitialDidFailToLoadAd:(YMAInterstitialController *)interstitial error:(NSError *)error
@@ -54,12 +57,12 @@ RCT_REMAP_METHOD(showRewardedAd,
         @"errorMessage": [error description],
         @"errorCode": [@([error code]) stringValue]
     } forKey:@"payload"];
-    [self sendEventWithName:@"interstitial" body:[mutableParams copy]];
+    [self lazySendEventWithName:@"interstitial" body:[mutableParams copy]];
 }
 
 - (void)interstitialWillLeaveApplication:(YMAInterstitialController *)interstitial {
     NSDictionary* params = [self buildEventParamsForType:@"interstitialWillLeaveApplication" andAdId:nil];
-    [self sendEventWithName:@"interstitial" body:params];
+    [self lazySendEventWithName:@"interstitial" body:params];
 }
 
 - (void)interstitialDidFailToPresentAd:(YMAInterstitialController *)interstitial error:(NSError *)error
@@ -70,34 +73,34 @@ RCT_REMAP_METHOD(showRewardedAd,
         @"errorMessage": [error description],
         @"errorCode": [@([error code]) stringValue]
     } forKey:@"payload"];
-    [self sendEventWithName:@"interstitial" body:[mutableParams copy]];
+    [self lazySendEventWithName:@"interstitial" body:[mutableParams copy]];
 }
 
 - (void)interstitialWillAppear:(YMAInterstitialController *)interstitial {
     NSDictionary* params = [self buildEventParamsForType:@"interstitialWillAppear" andAdId:nil];
-    [self sendEventWithName:@"interstitial" body:params];
+    [self lazySendEventWithName:@"interstitial" body:params];
 }
 
 - (void)interstitialDidAppear:(YMAInterstitialController *)interstitial
 {
     NSDictionary* params = [self buildEventParamsForType:@"interstitialDidAppear" andAdId:nil];
-    [self sendEventWithName:@"interstitial" body:params];
+    [self lazySendEventWithName:@"interstitial" body:params];
 }
 
 - (void)interstitialWillDisappear:(YMAInterstitialController *)interstitial {
     NSDictionary* params = [self buildEventParamsForType:@"interstitialWillDisappear" andAdId:nil];
-    [self sendEventWithName:@"interstitial" body:params];
+    [self lazySendEventWithName:@"interstitial" body:params];
 }
 
 - (void)interstitialDidDisappear:(YMAInterstitialController *)interstitial
 {
     NSDictionary* params = [self buildEventParamsForType:@"interstitialDidDisappear" andAdId:nil];
-    [self sendEventWithName:@"interstitial" body:params];
+    [self lazySendEventWithName:@"interstitial" body:params];
 }
 
 - (void)interstitialWillPresentScreen:(UIViewController *)webBrowser {
     NSDictionary* params = [self buildEventParamsForType:@"interstitialWillPresentScreen" andAdId:nil];
-    [self sendEventWithName:@"interstitial" body:params];
+    [self lazySendEventWithName:@"interstitial" body:params];
 }
 
 #pragma mark - YMARewardedAdDelegate
@@ -110,7 +113,7 @@ RCT_REMAP_METHOD(showRewardedAd,
         @"rewardType": [reward type],
         @"rewardAmount": [@([reward amount]) stringValue]
     } forKey:@"payload"];
-    [self sendEventWithName:@"rewarded" body:[mutableParams copy]];
+    [self lazySendEventWithName:@"rewarded" body:[mutableParams copy]];
 }
 
 -(void)rewardedAdDidLoadAd:(YMARewardedAd *)rewardedAd
@@ -118,7 +121,7 @@ RCT_REMAP_METHOD(showRewardedAd,
     UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
     [rewardedAd presentFromViewController:rootViewController];
     NSDictionary* params = [self buildEventParamsForType:@"rewardedAdDidLoadAd" andAdId:nil];
-    [self sendEventWithName:@"rewarded" body:params];
+    [self lazySendEventWithName:@"rewarded" body:params];
 }
 
 - (void)rewardedAdDidFailToLoadAd:(YMARewardedAd *)rewardedAd error:(NSError *)error
@@ -129,12 +132,12 @@ RCT_REMAP_METHOD(showRewardedAd,
         @"errorMessage": [error description],
         @"errorCode": [@([error code]) stringValue]
     } forKey:@"payload"];
-    [self sendEventWithName:@"rewarded" body:[mutableParams copy]];
+    [self lazySendEventWithName:@"rewarded" body:[mutableParams copy]];
 }
 
 - (void)rewardedAdWillLeaveApplication:(YMARewardedAd *)rewardedAd {
     NSDictionary* params = [self buildEventParamsForType:@"rewardedAdWillLeaveApplication" andAdId:nil];
-    [self sendEventWithName:@"rewarded" body:params];
+    [self lazySendEventWithName:@"rewarded" body:params];
 }
 
 - (void)rewardedAdDidFailToPresentAd:(YMARewardedAd *)rewardedAd error:(NSError *)error
@@ -145,34 +148,34 @@ RCT_REMAP_METHOD(showRewardedAd,
         @"errorMessage": [error description],
         @"errorCode": [@([error code]) stringValue]
     } forKey:@"payload"];
-    [self sendEventWithName:@"rewarded" body:[mutableParams copy]];
+    [self lazySendEventWithName:@"rewarded" body:[mutableParams copy]];
 }
 
 - (void)rewardedAdWillAppear:(YMARewardedAd *)rewardedAd {
     NSDictionary* params = [self buildEventParamsForType:@"rewardedAdWillAppear" andAdId:nil];
-    [self sendEventWithName:@"rewarded" body:params];
+    [self lazySendEventWithName:@"rewarded" body:params];
 }
 
 - (void)rewardedAdDidAppear:(YMARewardedAd *)rewardedAd
 {
     NSDictionary* params = [self buildEventParamsForType:@"rewardedAdDidAppear" andAdId:nil];
-    [self sendEventWithName:@"rewarded" body:params];
+    [self lazySendEventWithName:@"rewarded" body:params];
 }
 
 - (void)rewardedAdWillDisappear:(YMARewardedAd *)rewardedAd {
     NSDictionary* params = [self buildEventParamsForType:@"rewardedAdWillDisappear" andAdId:nil];
-    [self sendEventWithName:@"rewarded" body:params];
+    [self lazySendEventWithName:@"rewarded" body:params];
 }
 
 - (void)rewardedAdDidDisappear:(YMARewardedAd *)rewardedAd
 {
     NSDictionary* params = [self buildEventParamsForType:@"rewardedAdDidDisappear" andAdId:nil];
-    [self sendEventWithName:@"rewarded" body:params];
+    [self lazySendEventWithName:@"rewarded" body:params];
 }
 
 - (void)rewardedAd:(YMARewardedAd *)rewardedAd willPresentScreen:(UIViewController *)viewController {
     NSDictionary* params = [self buildEventParamsForType:@"rewardedAd:willPresentScreen" andAdId:nil];
-    [self sendEventWithName:@"rewarded" body:params];
+    [self lazySendEventWithName:@"rewarded" body:params];
 }
 
 
@@ -186,6 +189,12 @@ RCT_REMAP_METHOD(showRewardedAd,
     };
 }
 
+- (void)lazySendEventWithName:(NSString *)eventName body:(id)body {
+    if (hasListeners) {
+        [self sendEventWithName:eventName body:body];
+    }
+}
+
 #pragma mark - Setup
 
 - (NSArray<NSString *> *)supportedEvents
@@ -196,6 +205,14 @@ RCT_REMAP_METHOD(showRewardedAd,
 - (dispatch_queue_t)methodQueue
 {
     return dispatch_get_main_queue();
+}
+
+-(void)startObserving {
+    hasListeners = YES;
+}
+
+-(void)stopObserving {
+    hasListeners = NO;
 }
 
 @end
